@@ -1,0 +1,145 @@
+{% extends 'user_navbar.html' %}
+{% load static %}
+
+{% block title %} {{ job.title }} - Details {% endblock %}
+{% block job_list %} active {% endblock %}
+
+{% block body %}
+<div class="container mt-4 mb-5">
+    <div class="row">
+        
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            {% if job.image %}
+                            <img src="{{ job.image.url }}" alt="Company Logo" class="img-fluid rounded border" style="max-height: 200px; width: 100%; object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'images/default_job.png' %}" alt="Default" class="img-fluid rounded border">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-7">
+                            <h2 class="text-primary">{{ job.title }}</h2>
+                            <h5 class="text-muted">{{ job.company.company_name }}</h5>
+                            <p class="mb-1"><i class="fa fa-map-marker text-danger"></i> {{ job.location }}</p>
+                            <p class="mb-1"><i class="fa fa-calendar"></i> Posted: {{ job.creation_date }}</p>
+                            <p class="font-weight-bold" style="font-size: 1.1em;">
+                                Salary: <span class="text-success">₹ {{ job.salary }}/month</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h4>Overview</h4>
+                    <p style="white-space: pre-line;">{{ job.description }}</p>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-briefcase"></i> Experience:</strong> {{ job.experience }} years
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-code"></i> Skills:</strong> {{ job.skills }}
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-clock"></i> Apply between <b>{{ job.start_date }}</b> and <b>{{ job.end_date }}</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <h5>Ready to Apply?</h5>
+                    {% if applied %}
+                        <button class="btn btn-secondary btn-block" disabled>Already Applied</button>
+                    {% else %}
+                        <a href="{% url 'job_apply' job.id %}" class="btn btn-danger btn-block btn-lg">
+                            Apply Now
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-lg border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-robot"></i> Candidate Fit Analyzer </h5>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">Upload your resume to see how well you match this specific job!</p>
+                    
+                    <form id="aiAnalysisForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="resumeFile"><b>Upload Resume (PDF)</b></label>
+                            <input type="file" class="form-control-file" id="resumeFile" name="resume" accept=".pdf" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-outline-primary btn-block" id="analyzeBtn">
+                            <span id="btnText">Check My Readiness</span>
+                            <div id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" style="display:none;"></div>
+                        </button>
+                    </form>
+
+                    <div id="analysisResult" class="mt-3" style="display:none;">
+                        </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('aiAnalysisForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    let formData = new FormData();
+    let fileField = document.querySelector('#resumeFile');
+    let job_id = "{{ job.id }}"; 
+    
+    if(fileField.files.length === 0) { alert("Please upload a PDF."); return; }
+
+    formData.append('resume', fileField.files[0]);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    // UI Loading State
+    let btn = document.getElementById('analyzeBtn');
+    let spinner = document.getElementById('loadingSpinner');
+    let resultDiv = document.getElementById('analysisResult');
+
+    btn.disabled = true;
+    spinner.style.display = "inline-block";
+    resultDiv.style.display = "none";
+
+    // Send to Backend
+    fetch(`/analyze-resume/${job_id}/`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        resultDiv.style.display = "block";
+        if(data.analysis) {
+            resultDiv.innerHTML = `<div class="p-3 border rounded bg-light">${data.analysis}</div>`;
+        } else {
+            resultDiv.innerHTML = `<p class="text-danger">Error: ${data.error}</p>`;
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Something went wrong with the AI analysis.");
+    })
+    .finally(() => {
+        btn.disabled = false;
+        spinner.style.display = "none";
+    });
+});
+</script>
+
+{% endblock %}

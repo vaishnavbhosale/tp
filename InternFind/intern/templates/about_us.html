@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    {% load static %} 
+    <link rel="stylesheet" href="{% static 'about.css' %}"> 
+</head>
+<body>
+    <section class="hero">
+        <div class="heading">
+            <h1>About Us</h1>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h2>Welcome To Our Website</h2>
+                <p>We are a team of passionate about connecting talent with opportunity.
+                     We understand that finding the right job or the perfect candidate 
+                     can be a game-changer, and that’s why we’ve built a platform that 
+                     makes the process seamless, efficient, and effective. Our mission 
+                     is simple: to empower individuals and organizations by facilitating 
+                     meaningful connections. Whether you’re a job seeker looking for your
+                      next career move or an employer searching for top-tier talent, Job
+                       Hunder provides the tools and resources to streamline your search.
+                       Positionly is the only solution on the market that provides a simple
+                        and transparent way to monitor.the effectiveness.</p>
+                <button class="cta-button">Learn More</button>
+            </div>
+            <div class="hero-image">
+                <img src="{% static 'about.jpeg' %}">
+            </div>
+        </div>
+    </section>
+</body>
+</html>

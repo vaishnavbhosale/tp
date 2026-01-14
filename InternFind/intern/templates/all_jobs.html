@@ -1,0 +1,73 @@
+{% extends 'user_navbar.html' %}
+
+{% block title %} Job Lists {% endblock %}
+{% block job_list %} active {% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+
+    <form method="GET" action="" class="mb-4">
+        <div class="input-group" style="max-width: 600px; margin: 0 auto;">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control" 
+                placeholder="Search by job title, skill, or location..." 
+                value="{{ search_query }}"
+            >
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            {% if search_query %}
+            <div class="input-group-append">
+                <a href="{% url 'all_jobs' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+
+    <div class="table-responsive shadow-sm border rounded">
+        <table class="table table-hover mb-0" id="example">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Company Name</th>
+                    <th>Job Title</th>
+                    <th>Salary</th>
+                    <th>Location</th>
+                    <th>Created On</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in jobs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ job.company.company_name }}</td>
+                    <td>{{ job.title }}</td>
+                    <td><i class="fas fa-rupee-sign"></i> {{ job.salary }}</td>
+                    <td>{{ job.location }}</td>
+                    <td>{{ job.creation_date }}</td>
+
+                    <td>
+                        {% if job.id in data %}
+                            <button class="btn btn-secondary btn-sm" disabled>Applied</button>
+                        {% else %}
+                            <a href="{% url 'job_detail' job.id %}" class="btn btn-success btn-sm">
+                                View Details
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">No jobs found matching "{{ search_query }}"</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}
+  <p>{{ result }}</p>

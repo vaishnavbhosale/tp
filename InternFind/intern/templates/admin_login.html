@@ -1,0 +1,120 @@
+{% extends 'basic.html' %}
+
+{% block title %} Admin Login {% endblock %}
+{% block admin_login %} active {% endblock %}
+{% block css %}
+{% endblock %}
+{% block body %}
+
+<style>
+    
+    .form-group{
+        margin-top: 20px;
+
+
+    }
+    .form-check-input{
+        margin-top: 5px;
+    }
+    .form-check-label{
+        margin-top: 5px;
+    }
+    .form-check-inline{
+        margin-top: 5px;
+    }
+    .btn {
+        border-radius: 20px;
+    }
+    .container{
+        border: 1px solid lightgrey;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .container h1{
+        color: #0000FF;
+    }
+    .container{
+        margin-top: 50px;
+    }
+    .container input{
+        border: 1px solid lightgrey;
+        border-radius: 6px;
+    }
+    .container input[type="file"]{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:hover{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:focus{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:active{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:visited{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:link{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:after{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button:before{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::after{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::before{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::after{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::before{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::after{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::before{
+        border: none;
+    }
+    .container input[type="file"]::file-selector-button::after{
+        border: none;
+    }
+</style>
+
+<h1 class="text-center" style="margin-top:20px">Admin Login</h1>
+<form method="POST"> 
+    {% csrf_token %}
+    <div class="container mt-5 " style=" width: 500px;">
+        <div class="mb-3">
+            <label for="username" class="form-label"><i style="font-weight: bold;">Username</i></label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label"><i style="font-weight: bold;">Password</i></label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+        </div>
+        <br>
+        <input type="submit" value="Submit" class="btn" style="background-color: #000; color: white; font-size: larger; width: 8rem;  border-radius: 20px;">
+       
+    </div>
+</form>
+{% endblock %}
+{% block js %}
+
+    {% if alert %}
+    <script>
+    alert("Invalid Credentials. Please try again.");
+    window.location.href = "/admin_login"
+</script>
+    {% endif %}
+
+{% endblock %}
